@@ -1,0 +1,8 @@
+{
+  "name": "colormandalart",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node work/server.js"
+  }
+}
