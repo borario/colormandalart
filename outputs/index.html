@@ -62,6 +62,7 @@
     input,
     textarea {
       font: inherit;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .app {
@@ -201,7 +202,7 @@
       width: 28px;
       height: 28px;
       border: 0;
-      background: transparent url("assets/icon-toggle.png") center / auto no-repeat;
+      background: transparent url("assets/icon-toggle.png") center / 18px auto no-repeat;
       cursor: pointer;
       padding: 0;
     }
@@ -616,7 +617,12 @@
 
     @media (max-width: 820px) {
       .app {
-        padding: 108px 16px 88px;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 72px 16px 32px;
       }
 
       .hero {
@@ -637,43 +643,43 @@
       }
 
       .tools {
-        gap: 12px;
+        gap: 10px;
         right: 18px;
         top: 18px;
       }
 
       .round {
-        width: 44px;
-        height: 44px;
-        border-width: 4px;
+        width: 35px;
+        height: 35px;
+        border-width: 3px;
       }
 
       .export {
-        width: 128px;
-        min-width: 128px;
-        height: 52px;
-        border-radius: 16px;
-        font-size: 22px;
+        width: 102px;
+        min-width: 102px;
+        height: 42px;
+        border-radius: 13px;
+        font-size: 18px;
       }
 
       .theme-menu {
-        left: 22px;
-        top: 4px;
+        left: 17.5px;
+        top: 3.5px;
       }
 
       .theme-arrow {
-        width: 44px;
-        height: 44px;
-        background-size: 18px auto;
+        width: 35px;
+        height: 35px;
+        background-size: 22px auto;
       }
 
       .theme-palette {
-        width: 68px;
+        width: 59px;
       }
 
       .swatch {
-        width: 44px;
-        height: 44px;
+        width: 35px;
+        height: 35px;
       }
 
       .workspace {
@@ -690,8 +696,8 @@
 
       .cell {
         padding: 3px;
-        font-size: clamp(8px, 2.7vw, 12px);
-        line-height: 14px;
+        font-size: clamp(7px, 2.25vw, 10px);
+        line-height: 12px;
       }
 
       .wordmark {
@@ -766,8 +772,24 @@
       }
 
       .theme-menu {
-        top: 4px;
+        top: 3.5px;
         right: 0;
+      }
+    }
+
+    @media (max-width: 820px) and (max-height: 760px) {
+      .app {
+        justify-content: flex-start;
+        padding-top: 72px;
+        padding-bottom: 24px;
+      }
+
+      .hero {
+        margin-bottom: 12px;
+      }
+
+      .wordmark {
+        margin-top: 12px;
       }
     }
   </style>
@@ -1282,7 +1304,8 @@
         if (cell.disabled || cell.readOnly || cell.classList.contains("is-filled")) return;
         cell.classList.add("is-hovering");
         if (window.innerWidth <= 820) {
-          window.setTimeout(() => cell.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" }), 120);
+          const section = cell.parentElement;
+          window.setTimeout(() => section.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" }), 120);
         }
       });
       cell.addEventListener("blur", () => {
