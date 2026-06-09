@@ -545,20 +545,20 @@
       font-weight: 600;
     }
 
-    .preview-print,
-    .preview-phone {
+    .preview-digital,
+    .preview-print {
       margin: 0 auto 12px;
       background: rgba(69, 80, 94, 0.5);
     }
 
-    .preview-print {
-      width: 100px;
+    .preview-digital {
+      width: 26px;
       height: 56px;
     }
 
-    .preview-phone {
-      width: 28px;
-      height: 56px;
+    .preview-print {
+      width: 40px;
+      height: 57px;
     }
 
     .download-size {
@@ -614,26 +614,14 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
     }
 
-    .image-preview-close {
-      position: absolute;
-      right: -12px;
-      top: -12px;
-      width: 32px;
-      height: 32px;
-      border: 0;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.55);
-      cursor: pointer;
-    }
-
     @media (max-width: 820px) {
       .app {
-        padding-top: 150px;
-        padding-bottom: 150px;
+        padding: 108px 16px 88px;
       }
 
       .hero {
-        margin-bottom: 18px;
+        width: calc(100vw - 32px);
+        margin-bottom: 16px;
       }
 
       .brand {
@@ -643,43 +631,108 @@
 
       .title {
         min-width: 0;
-        width: 900px;
+        width: 100%;
         text-align: center;
+        font-size: 48px;
       }
 
       .tools {
-        gap: 10px;
+        gap: 12px;
+        right: 18px;
+        top: 18px;
       }
 
       .round {
-        width: 28px;
-        height: 28px;
+        width: 44px;
+        height: 44px;
+        border-width: 4px;
       }
 
       .export {
-        width: 138px;
-        min-width: 138px;
-        height: 45px;
-        border-radius: 15px;
-        font-size: 20px;
+        width: 128px;
+        min-width: 128px;
+        height: 52px;
+        border-radius: 16px;
+        font-size: 22px;
       }
 
       .theme-menu {
-        left: 14px;
-        top: 40px;
+        left: 22px;
+        top: 4px;
+      }
+
+      .theme-arrow {
+        width: 44px;
+        height: 44px;
+        background-size: 18px auto;
+      }
+
+      .theme-palette {
+        width: 68px;
+      }
+
+      .swatch {
+        width: 44px;
+        height: 44px;
       }
 
       .workspace {
-        padding: 10px;
+        width: calc(100vw - 32px);
+        padding: 0;
       }
 
       .mandalart {
-        gap: 6px;
+        width: calc(100vw - 32px);
+        height: calc(100vw - 32px);
+        border-radius: 16px;
+        gap: 0;
       }
 
       .cell {
         padding: 3px;
-        font-size: clamp(7px, 2.1vw, 10px);
+        font-size: clamp(8px, 2.7vw, 12px);
+        line-height: 14px;
+      }
+
+      .wordmark {
+        margin-top: 18px;
+        font-size: 20px;
+      }
+
+      .share-popup {
+        width: calc(100vw - 24px);
+        max-width: calc(100vw - 24px);
+        padding: 0 22px 24px;
+      }
+
+      .popup-title {
+        font-size: 24px;
+        line-height: 28px;
+      }
+
+      .share-link {
+        height: 54px;
+        font-size: 16px;
+      }
+
+      .icon-square {
+        width: 54px;
+        height: 54px;
+      }
+
+      .download-options {
+        gap: 10px;
+      }
+
+      .download-card {
+        flex: 1;
+        min-width: 0;
+        width: auto;
+        padding: 18px 8px;
+      }
+
+      .download-card h3 {
+        font-size: 20px;
       }
     }
 
@@ -697,23 +750,23 @@
       }
 
       .year {
-        font-size: 13px;
+        font-size: 18px;
       }
 
       .title {
-        font-size: 40px;
+        font-size: 48px;
       }
 
       .tools {
         flex-direction: row;
         align-items: center;
-        right: 30px;
-        top: 30px;
+        right: 18px;
+        top: 18px;
         transform: none;
       }
 
       .theme-menu {
-        top: 8.5px;
+        top: 4px;
         right: 0;
       }
     }
@@ -768,19 +821,19 @@
 
       <div class="download-options">
         <article class="download-card">
-          <h3>For Print</h3>
-          <div class="preview-print" aria-hidden="true"></div>
-          <p class="download-size">1280*720</p>
-          <button class="icon-square download" id="downloadPrintButton" type="button" aria-label="Download print image">
+          <h3>For Digital</h3>
+          <div class="preview-digital" aria-hidden="true"></div>
+          <p class="download-size">2580x5592</p>
+          <button class="icon-square download" id="downloadPrintButton" type="button" aria-label="Download digital wallpaper image">
             <img class="popup-icon" src="assets/icon-download.png" alt="" />
           </button>
         </article>
 
         <article class="download-card">
-          <h3>For Phone</h3>
-          <div class="preview-phone" aria-hidden="true"></div>
-          <p class="download-size">600x1200</p>
-          <button class="icon-square download" id="downloadPhoneButton" type="button" aria-label="Download phone image">
+          <h3>For Print</h3>
+          <div class="preview-print" aria-hidden="true"></div>
+          <p class="download-size">1588x2246</p>
+          <button class="icon-square download" id="downloadPhoneButton" type="button" aria-label="Download print image">
             <img class="popup-icon" src="assets/icon-download.png" alt="" />
           </button>
         </article>
@@ -791,9 +844,6 @@
 
   <div class="image-preview-backdrop" id="imagePreviewBackdrop" aria-hidden="true">
     <div class="image-preview" role="dialog" aria-modal="true" aria-label="Generated image preview">
-      <button class="image-preview-close" id="imagePreviewClose" type="button" aria-label="Close preview">
-        <img class="popup-icon" src="assets/icon-close.png" alt="" />
-      </button>
       <img id="imagePreview" alt="Generated Mandalart" />
     </div>
   </div>
@@ -895,7 +945,6 @@
     const downloadPrintButton = document.getElementById("downloadPrintButton");
     const downloadPhoneButton = document.getElementById("downloadPhoneButton");
     const imagePreviewBackdrop = document.getElementById("imagePreviewBackdrop");
-    const imagePreviewClose = document.getElementById("imagePreviewClose");
     const imagePreview = document.getElementById("imagePreview");
     const cells = {};
     let previewObjectUrl = "";
@@ -1126,7 +1175,7 @@
       ctx.fillRect(0, 0, width, height);
 
       const isPortrait = height > width;
-      const boardSidePadding = isPortrait ? 16 : 0;
+      const boardSidePadding = isPortrait ? 48 : 0;
       const boardSize = isPortrait ? width - boardSidePadding * 2 : Math.min(width * 0.68, height * 0.72);
       const scale = boardSize / 900;
       const yearFontSize = Math.max(10, 22 * scale);
@@ -1232,6 +1281,9 @@
       cell.addEventListener("focus", () => {
         if (cell.disabled || cell.readOnly || cell.classList.contains("is-filled")) return;
         cell.classList.add("is-hovering");
+        if (window.innerWidth <= 820) {
+          window.setTimeout(() => cell.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" }), 120);
+        }
       });
       cell.addEventListener("blur", () => {
         cell.classList.remove("is-hovering");
@@ -1304,13 +1356,12 @@
     sharePopupBackdrop.addEventListener("click", (event) => {
       if (event.target === sharePopupBackdrop) closeSharePopup();
     });
-    imagePreviewClose.addEventListener("click", closeImagePreview);
     imagePreviewBackdrop.addEventListener("click", (event) => {
       if (event.target === imagePreviewBackdrop) closeImagePreview();
     });
     copyLinkButton.addEventListener("click", copyShareLink);
-    downloadPrintButton.addEventListener("click", () => downloadImage(1280, 720, "print"));
-    downloadPhoneButton.addEventListener("click", () => downloadImage(600, 1200, "phone"));
+    downloadPrintButton.addEventListener("click", () => downloadImage(2580, 5592, "digital"));
+    downloadPhoneButton.addEventListener("click", () => downloadImage(1588, 2246, "print"));
     window.addEventListener("resize", alignAllCells);
     document.addEventListener("click", (event) => {
       if (!event.target.closest(".tools")) closeThemeMenu();
