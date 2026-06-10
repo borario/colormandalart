@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>2026 Mandalart</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Rokkitt:wght@500;600;700;800&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@500;600;700;800&display=swap");
     @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 
     :root {
@@ -41,7 +41,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Rokkitt", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Lexend Deca", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
       background: linear-gradient(180deg, var(--sky-a) 0%, var(--ground) 50%, var(--ground) 100%);
       overflow-x: hidden;
@@ -97,15 +97,15 @@
     }
 
     .year {
-      width: 140px;
+      width: min(900px, 100%);
       border: 0;
       padding: 0;
       color: var(--title-color);
       background: transparent;
-      font-family: "Rokkitt", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Lexend Deca", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: clamp(15px, 1.8vw, 22px);
       font-weight: 600;
-      letter-spacing: 0.42em;
+      letter-spacing: 0;
       text-align: center;
       outline: 0;
     }
@@ -117,7 +117,7 @@
       padding: 0;
       color: var(--title-color);
       background: transparent;
-      font-family: "Rokkitt", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Lexend Deca", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 40px;
       line-height: 0.98;
       font-weight: 700;
@@ -154,11 +154,15 @@
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
       cursor: pointer;
       padding: 0;
+      transform-origin: center;
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), background 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
     }
 
-    .round.is-hidden {
-      visibility: hidden;
-      pointer-events: none;
+    .round.is-menu-open {
+      transform: scale(0.28);
+      border-color: #ffffff;
+      background: #ffffff;
+      box-shadow: none;
     }
 
     .export {
@@ -183,49 +187,38 @@
 
     .theme-menu {
       position: absolute;
-      top: 8.5px;
+      top: 40px;
       left: 14px;
-      transform: translateX(-50%);
-      display: none;
+      transform: translateX(-50%) translateY(-8px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      display: flex;
       gap: 12px;
       flex-direction: column;
       align-items: center;
       z-index: 4;
+      transition: opacity 240ms ease, transform 280ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 280ms;
     }
 
     .theme-menu.open {
-      display: flex;
-    }
-
-    .theme-arrow {
-      position: relative;
-      width: 28px;
-      height: 28px;
-      border: 0;
-      background: transparent url("assets/icon-toggle.png") center / 18px auto no-repeat;
-      cursor: pointer;
-      padding: 0;
-    }
-
-    .theme-arrow img {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
     }
 
     .theme-palette {
       display: flex;
-      width: 52px;
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(0, 0, 0, 0.25);
+      width: 28px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
       gap: 12px;
       flex-direction: column;
       align-items: center;
+      transform-origin: top center;
     }
 
     .swatch {
@@ -237,6 +230,38 @@
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
       cursor: pointer;
       padding: 0;
+      opacity: 0;
+      transform: translateY(-10px) scale(0.9);
+      transition: opacity 220ms ease, transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .theme-menu.open .swatch {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .theme-menu.open .swatch:nth-child(1) {
+      transition-delay: 20ms;
+    }
+
+    .theme-menu.open .swatch:nth-child(2) {
+      transition-delay: 55ms;
+    }
+
+    .theme-menu.open .swatch:nth-child(3) {
+      transition-delay: 90ms;
+    }
+
+    .theme-menu.open .swatch:nth-child(4) {
+      transition-delay: 125ms;
+    }
+
+    .theme-menu.open .swatch:nth-child(5) {
+      transition-delay: 160ms;
+    }
+
+    .theme-menu.open .swatch:nth-child(6) {
+      transition-delay: 195ms;
     }
 
     .workspace {
@@ -404,7 +429,7 @@
       width: max-content;
       margin: 22px auto 0;
       color: rgba(0, 0, 0, 0.35);
-      font-family: "Rokkitt", Pretendard, sans-serif;
+      font-family: "Lexend Deca", Pretendard, sans-serif;
       font-size: 18px;
       font-weight: 600;
       letter-spacing: 0;
@@ -422,15 +447,22 @@
       position: fixed;
       inset: 0;
       z-index: 20;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
       background: rgba(0, 0, 0, 0.08);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 220ms ease, visibility 0s linear 220ms;
     }
 
     .popup-backdrop.open {
-      display: flex;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
     }
 
     .share-popup {
@@ -442,6 +474,14 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
       color: #595b5e;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(10px) scale(0.985);
+      transition: opacity 220ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .popup-backdrop.open .share-popup {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     .popup-header {
@@ -483,7 +523,7 @@
       background: #e9eef2;
       color: #595b5e;
       padding: 9px 20px;
-      font-family: "Rokkitt", Pretendard, sans-serif;
+      font-family: "Lexend Deca", Pretendard, sans-serif;
       font-size: 15px;
       font-weight: 600;
       outline: 0;
@@ -682,17 +722,11 @@
 
       .theme-menu {
         left: 17.5px;
-        top: 3.5px;
-      }
-
-      .theme-arrow {
-        width: 35px;
-        height: 35px;
-        background-size: 22px auto;
+        top: 47px;
       }
 
       .theme-palette {
-        width: 59px;
+        width: 35px;
       }
 
       .swatch {
@@ -725,9 +759,13 @@
         font-size: 20px;
       }
 
+      .popup-backdrop {
+        padding: 16px;
+      }
+
       .share-popup {
-        width: calc(100vw - 24px);
-        max-width: calc(100vw - 24px);
+        width: 100%;
+        max-width: 100%;
         padding: 0 22px 24px;
       }
 
@@ -792,7 +830,7 @@
       }
 
       .theme-menu {
-        top: 3.5px;
+        top: 47px;
         right: 0;
       }
     }
@@ -817,7 +855,7 @@
   <main class="app" id="captureArea">
     <header class="hero">
       <label class="brand">
-        <input class="year" id="yearInput" value="2026" aria-label="Year" inputmode="numeric" maxlength="4" />
+        <input class="year" id="yearInput" value="2026" aria-label="Year" />
         <input class="title" id="titleInput" value="Mandalart" aria-label="Mandalart title" />
       </label>
 
@@ -825,7 +863,6 @@
         <button class="round" id="themeButton" type="button" aria-label="테마 색상 변경"></button>
         <button class="export" id="exportButton" type="button">Save</button>
         <div class="theme-menu" id="themeMenu" aria-label="Theme colors">
-          <button class="theme-arrow" id="themeCloseButton" type="button" aria-label="색상 메뉴 닫기"></button>
           <div class="theme-palette">
             <button class="swatch" type="button" data-theme="sky" aria-label="Sky theme"></button>
             <button class="swatch" type="button" data-theme="green" aria-label="Green theme"></button>
@@ -976,7 +1013,6 @@
     const titleInput = document.getElementById("titleInput");
     const themeButton = document.getElementById("themeButton");
     const themeMenu = document.getElementById("themeMenu");
-    const themeCloseButton = document.getElementById("themeCloseButton");
     const exportButton = document.getElementById("exportButton");
     const sharePopupBackdrop = document.getElementById("sharePopupBackdrop");
     const sharePopupClose = document.getElementById("sharePopupClose");
@@ -1067,18 +1103,41 @@
       if (filled) input.classList.remove("is-hovering");
     }
 
+    function measureCellTextHeight(cell) {
+      if (!measureCellTextHeight.node) {
+        measureCellTextHeight.node = document.createElement("div");
+        measureCellTextHeight.node.style.position = "fixed";
+        measureCellTextHeight.node.style.left = "-9999px";
+        measureCellTextHeight.node.style.top = "0";
+        measureCellTextHeight.node.style.visibility = "hidden";
+        measureCellTextHeight.node.style.pointerEvents = "none";
+        measureCellTextHeight.node.style.whiteSpace = "pre-wrap";
+        measureCellTextHeight.node.style.overflowWrap = "anywhere";
+        measureCellTextHeight.node.style.wordBreak = "keep-all";
+        document.body.appendChild(measureCellTextHeight.node);
+      }
+
+      const styles = window.getComputedStyle(cell);
+      const node = measureCellTextHeight.node;
+      node.style.width = `${cell.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight)}px`;
+      node.style.fontFamily = styles.fontFamily;
+      node.style.fontSize = styles.fontSize;
+      node.style.fontWeight = styles.fontWeight;
+      node.style.lineHeight = styles.lineHeight;
+      node.style.letterSpacing = styles.letterSpacing;
+      node.textContent = cell.value || cell.placeholder || " ";
+      return node.getBoundingClientRect().height;
+    }
+
     function alignCellText(cell) {
       const styles = window.getComputedStyle(cell);
-      const lineHeight = parseFloat(styles.lineHeight) || 18;
-      const text = cell.value || cell.placeholder || "";
-      const roughCharsPerLine = 10;
-      const lineCount = text.split(/\n/).reduce((total, line) => {
-        return total + Math.max(1, Math.ceil([...line].length / roughCharsPerLine));
-      }, 0);
-      const contentHeight = Math.min(lineCount * lineHeight, cell.clientHeight);
-      const verticalPadding = Math.max(0, (cell.clientHeight - contentHeight) / 2);
+      const basePadding = parseFloat(styles.paddingLeft) || 6;
+      cell.style.paddingTop = `${basePadding}px`;
+      cell.style.paddingBottom = `${basePadding}px`;
+      const contentHeight = Math.min(measureCellTextHeight(cell), cell.clientHeight - basePadding * 2);
+      const verticalPadding = Math.max(basePadding, (cell.clientHeight - contentHeight) / 2);
       cell.style.paddingTop = `${verticalPadding}px`;
-      cell.style.paddingBottom = "0px";
+      cell.style.paddingBottom = `${verticalPadding}px`;
     }
 
     function alignAllCells() {
@@ -1120,12 +1179,12 @@
 
     function openThemeMenu() {
       themeMenu.classList.add("open");
-      themeButton.classList.add("is-hidden");
+      themeButton.classList.add("is-menu-open");
     }
 
     function closeThemeMenu() {
       themeMenu.classList.remove("open");
-      themeButton.classList.remove("is-hidden");
+      themeButton.classList.remove("is-menu-open");
     }
 
     function toggleThemeMenu() {
@@ -1165,6 +1224,10 @@
       return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
     }
 
+    function spacedYear(year = new Date().getFullYear()) {
+      return String(year).split("").join("  ");
+    }
+
     function drawCell(ctx, x, y, size, text, center, enabled, role) {
       const isThird = role === "third";
       const isMain = role === "main";
@@ -1181,7 +1244,7 @@
       ctx.fillStyle = isThird ? "#3a3a3a" : (isMain ? cssVar("--main-text-color") : "rgba(255,255,255,0.95)");
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.font = `600 ${Math.max(7, size * 0.15)}px Rokkitt, Pretendard, sans-serif`;
+      ctx.font = `600 ${Math.max(7, size * 0.15)}px "Lexend Deca", Pretendard, sans-serif`;
       wrapText(ctx, text, x + size / 2, y + size / 2, size * 0.74, Math.max(9, size * 0.18));
     }
 
@@ -1223,7 +1286,7 @@
       const yearFontSize = Math.max(10, 22 * scale);
       const titleFontSize = Math.max(18, 40 * scale);
       const wordmarkFontSize = Math.max(11, 18 * scale);
-      const titleGap = Math.max(2, 2 * scale);
+      const titleGap = Math.max(4, 4 * scale);
       const boardGap = Math.max(14, 20 * scale);
       const wordmarkGap = Math.max(14, 22 * scale);
       const contentHeight = yearFontSize + titleGap + titleFontSize + boardGap + boardSize + wordmarkGap + wordmarkFontSize;
@@ -1236,9 +1299,9 @@
       ctx.fillStyle = cssVar("--title-color");
       ctx.textBaseline = "top";
       ctx.textAlign = "center";
-      ctx.font = `600 ${yearFontSize}px Rokkitt, Pretendard, sans-serif`;
-      ctx.fillText((yearInput.value || String(new Date().getFullYear())).split("").join(" "), width / 2, yearY);
-      ctx.font = `700 ${titleFontSize}px Rokkitt, Pretendard, sans-serif`;
+      ctx.font = `600 ${yearFontSize}px "Lexend Deca", Pretendard, sans-serif`;
+      ctx.fillText(yearInput.value || spacedYear(), width / 2, yearY);
+      ctx.font = `700 ${titleFontSize}px "Lexend Deca", Pretendard, sans-serif`;
       ctx.fillText(titleInput.value || "Mandalart", width / 2, titleY);
 
       const panelX = boardX;
@@ -1271,7 +1334,7 @@
       ctx.fillStyle = "rgba(0,0,0,0.35)";
       ctx.textAlign = "center";
       ctx.textBaseline = "top";
-      ctx.font = `600 ${wordmarkFontSize}px Rokkitt, Pretendard, sans-serif`;
+      ctx.font = `600 ${wordmarkFontSize}px "Lexend Deca", Pretendard, sans-serif`;
       ctx.fillText("@everyday.actions", width / 2, boardY + boardSize + wordmarkGap);
 
       canvas.toBlob((blob) => {
@@ -1292,7 +1355,7 @@
 
     setUpThemeSwatches();
     buildBoard();
-    yearInput.value = String(new Date().getFullYear());
+    yearInput.value = spacedYear();
     syncState();
     alignAllCells();
 
@@ -1344,7 +1407,6 @@
 
     titleInput.addEventListener("dblclick", () => titleInput.select());
     themeButton.addEventListener("click", toggleThemeMenu);
-    themeCloseButton.addEventListener("click", closeThemeMenu);
     themeMenu.addEventListener("click", (event) => {
       const theme = event.target.closest(".swatch")?.dataset.theme;
       if (theme) applyTheme(theme);
