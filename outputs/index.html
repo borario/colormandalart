@@ -1025,6 +1025,7 @@
     const imagePreview = document.getElementById("imagePreview");
     const cells = {};
     let previewObjectUrl = "";
+    const publishedUrl = "https://colormandalart.netlify.app/";
 
     function makeCell({ block, key, label, center = false, disabled = true, readOnly = false, role = "third" }) {
       const input = document.createElement("textarea");
@@ -1175,6 +1176,63 @@
       if (!theme) return;
       Object.entries(theme).forEach(([key, value]) => document.documentElement.style.setProperty(key, value));
       themeButton.dataset.theme = name;
+    }
+
+    function encodeShareState(state) {
+      const json = JSON.stringify(state);
+      const bytes = new TextEncoder().encode(json);
+      let binary = "";
+      bytes.forEach((byte) => {
+        binary += String.fromCharCode(byte);
+      });
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+
+    function decodeShareState(encoded) {
+      const base64 = encoded.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(encoded.length / 4) * 4, "=");
+      const binary = atob(base64);
+      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+      return JSON.parse(new TextDecoder().decode(bytes));
+    }
+
+    function collectShareState() {
+      const values = {};
+      Object.entries(cells).forEach(([key, cell]) => {
+        const value = cell.value.trim();
+        if (value) values[key] = value;
+      });
+      return {
+        v: 1,
+        y: yearInput.value.trim(),
+        t: titleInput.value.trim(),
+        th: themeButton.dataset.theme || "sky",
+        c: values,
+      };
+    }
+
+    function buildShareUrl() {
+      const baseUrl = window.location.protocol === "file:"
+        ? publishedUrl
+        : `${window.location.origin}${window.location.pathname}`;
+      return `${baseUrl}#m=${encodeShareState(collectShareState())}`;
+    }
+
+    function loadShareFromUrl() {
+      const match = window.location.hash.match(/(?:^#|&)m=([^&]+)/);
+      if (!match) return;
+      try {
+        const state = decodeShareState(match[1]);
+        if (state.th && themeMap[state.th]) applyTheme(state.th);
+        if (state.y) yearInput.value = state.y;
+        Object.entries(state.c || {}).forEach(([key, value]) => {
+          if (cells[key]) cells[key].value = value;
+        });
+        syncState();
+        if (state.t) titleInput.value = state.t;
+        alignAllCells();
+      } catch {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
     }
 
     function openThemeMenu() {
@@ -1357,6 +1415,7 @@
     buildBoard();
     yearInput.value = spacedYear();
     syncState();
+    loadShareFromUrl();
     alignAllCells();
 
     board.addEventListener("input", (event) => {
@@ -1412,7 +1471,7 @@
       if (theme) applyTheme(theme);
     });
     function openSharePopup() {
-      shareLink.value = "https://www.colormandalart.com/asdfasdfasdfasdf....";
+      shareLink.value = buildShareUrl();
       sharePopupBackdrop.classList.add("open");
       sharePopupBackdrop.setAttribute("aria-hidden", "false");
     }
