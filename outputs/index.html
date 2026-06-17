@@ -91,11 +91,45 @@
     body {
       margin: 0;
       min-height: 100vh;
+      position: relative;
       font-family: "Lexend Deca", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
       background: linear-gradient(180deg, var(--sky-a) 0%, var(--ground) 50%, var(--ground) 100%);
       overflow-x: hidden;
       scrollbar-width: none;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 400vh;
+      z-index: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, #fff8b1 0%, #ffb270 10%, #ff94fd 20%, #ae80ef 30%, #1bd5cc 40%, #fff8b1 50%, #ffb270 60%, #ff94fd 70%, #ae80ef 80%, #1bd5cc 90%, #fff8b1 100%);
+      opacity: 0;
+      transform: translateY(0);
+      transition: opacity 900ms ease;
+    }
+
+    body.is-celebrating::before {
+      opacity: 1;
+      animation: celebrationFlow 1300ms linear infinite;
+    }
+
+    body.is-celebration-fading::before {
+      opacity: 0;
+    }
+
+    @keyframes celebrationFlow {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(-50%);
+      }
     }
 
     html {
@@ -117,6 +151,8 @@
 
     .app {
       min-height: 100vh;
+      position: relative;
+      z-index: 1;
       padding: 150px clamp(16px, 4vw, 58px);
     }
 
@@ -647,6 +683,7 @@
 
     .preview-digital,
     .preview-print {
+      display: none;
       margin: 0 auto 12px;
       background: rgba(69, 80, 94, 0.5);
     }
@@ -663,9 +700,9 @@
 
     .download-size {
       margin: 0 0 12px;
-      color: #45505e;
+      color: #aab3bf;
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 500;
     }
 
     .popup-icon {
@@ -962,7 +999,7 @@
 
       <div class="download-options">
         <article class="download-card">
-          <h3>For Digital</h3>
+          <h3>Wallpaper</h3>
           <div class="preview-digital" aria-hidden="true"></div>
           <p class="download-size">2580x5592</p>
           <button class="icon-square download" id="downloadPrintButton" type="button" aria-label="Download digital wallpaper image">
@@ -971,7 +1008,7 @@
         </article>
 
         <article class="download-card">
-          <h3>For Print</h3>
+          <h3>Print</h3>
           <div class="preview-print" aria-hidden="true"></div>
           <p class="download-size">1588x2246</p>
           <button class="icon-square download" id="downloadPhoneButton" type="button" aria-label="Download print image">
@@ -1192,6 +1229,10 @@
     const cells = {};
     let previewObjectUrl = "";
     const publishedUrl = "https://colormandalart.netlify.app/";
+    let lastCellFeedbackAt = 0;
+    let wasBoardComplete = false;
+    let celebrationTimer;
+    let celebrationFadeTimer;
 
     function makeCell({ block, key, label, center = false, disabled = true, readOnly = false, role = "third" }) {
       const input = document.createElement("textarea");
@@ -1260,9 +1301,9 @@
     }
 
     function setEnabled(input, enabled) {
-      input.disabled = !enabled;
-      if (!enabled || input.readOnly) input.classList.remove("is-hovering");
-      if (!enabled && !input.readOnly) input.value = "";
+      const hasValue = Boolean(input.value.trim());
+      input.disabled = !(enabled || hasValue);
+      if (input.disabled || input.readOnly) input.classList.remove("is-hovering");
     }
 
     function setFilled(input, filled) {
@@ -1472,6 +1513,44 @@
       wrapText(ctx, text, x + size / 2, y + size / 2, size * 0.74, Math.max(9, size * 0.18));
     }
 
+    function playCellHaptic() {
+      if (!("vibrate" in navigator)) return;
+      navigator.vibrate(8);
+    }
+
+    function playCellFeedback() {
+      const now = performance.now();
+      if (now - lastCellFeedbackAt < 90) return;
+      lastCellFeedbackAt = now;
+      playCellHaptic();
+    }
+
+    function isBoardComplete() {
+      return Object.values(cells).every((cell) => cell.value.trim());
+    }
+
+    function triggerCompletionCelebration() {
+      window.clearTimeout(celebrationTimer);
+      window.clearTimeout(celebrationFadeTimer);
+      document.body.classList.remove("is-celebrating");
+      document.body.classList.remove("is-celebration-fading");
+      document.body.offsetWidth;
+      document.body.classList.add("is-celebrating");
+      celebrationTimer = window.setTimeout(() => {
+        document.body.classList.add("is-celebration-fading");
+      }, 1100);
+      celebrationFadeTimer = window.setTimeout(() => {
+        document.body.classList.remove("is-celebrating");
+        document.body.classList.remove("is-celebration-fading");
+      }, 2200);
+    }
+
+    function checkCompletionCelebration() {
+      const complete = isBoardComplete();
+      if (complete && !wasBoardComplete) triggerCompletionCelebration();
+      wasBoardComplete = complete;
+    }
+
     function openImagePreview(objectUrl) {
       if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
       previewObjectUrl = objectUrl;
@@ -1583,6 +1662,7 @@
     syncState();
     loadShareFromUrl();
     alignAllCells();
+    wasBoardComplete = isBoardComplete();
 
     board.addEventListener("input", (event) => {
       const cell = event.target.closest(".cell");
@@ -1599,11 +1679,13 @@
       }
       syncState();
       alignAllCells();
+      checkCompletionCelebration();
     });
     board.querySelectorAll(".cell").forEach((cell) => {
       cell.addEventListener("mouseenter", () => {
         if (cell.disabled || cell.readOnly || cell.classList.contains("is-filled")) return;
         cell.classList.add("is-hovering");
+        playCellFeedback();
       });
       cell.addEventListener("mouseleave", () => {
         cell.classList.remove("is-hovering");
@@ -1611,6 +1693,7 @@
       cell.addEventListener("focus", () => {
         if (cell.disabled || cell.readOnly || cell.classList.contains("is-filled")) return;
         cell.classList.add("is-hovering");
+        playCellFeedback();
       });
       cell.addEventListener("blur", () => {
         cell.classList.remove("is-hovering");
@@ -1620,6 +1703,7 @@
       const cell = event.target.closest(".cell");
       if (!cell || cell.disabled || cell.readOnly || cell.classList.contains("is-filled")) return;
       cell.classList.add("is-hovering");
+      playCellFeedback();
     });
     board.addEventListener("pointerout", (event) => {
       const cell = event.target.closest(".cell");
