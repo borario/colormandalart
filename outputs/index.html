@@ -3,27 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Color Mandalart | Make and Share Your Goals</title>
-  <meta name="description" content="Create a colorful Mandalart goal map, customize themes, save it as an image, and share your plan with a link." />
+  <title>컬러 만다라트 | Make and Share Your Own Goals</title>
+  <meta name="description" content="만다라트로 나만의 목표를 설계하고, 테마를 바꾸고, 공유하고 달성하세요." />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#00AAFF" />
   <link rel="canonical" href="https://colormandalart.netlify.app/" />
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <link rel="manifest" href="site.webmanifest" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content="Color Mandalart" />
-  <meta property="og:title" content="Color Mandalart" />
-  <meta property="og:description" content="Make, color, save, and share your goals with a beautiful Mandalart board." />
+  <meta property="og:title" content="컬러 만다라트 | Color Mandalart" />
+  <meta property="og:description" content="만다라트로 나만의 목표를 설계하고, 테마를 바꾸고, 공유하고 달성하세요." />
   <meta property="og:url" content="https://colormandalart.netlify.app/" />
   <meta property="og:image" content="https://colormandalart.netlify.app/assets/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Color Mandalart preview image" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Color Mandalart" />
-  <meta name="twitter:description" content="Make, color, save, and share your goals with a beautiful Mandalart board." />
+  <meta name="twitter:title" content="컬러 만다라트 | Color Mandalart" />
+  <meta name="twitter:description" content="만다라트로 나만의 목표를 설계하고, 테마를 바꾸고, 공유하고 달성하세요." />
   <meta name="twitter:image" content="https://colormandalart.netlify.app/assets/og-image.png" />
   <script type="application/ld+json">
     {
@@ -31,7 +31,7 @@
       "@type": "WebApplication",
       "name": "Color Mandalart",
       "url": "https://colormandalart.netlify.app/",
-      "description": "Create a colorful Mandalart goal map, customize themes, save it as an image, and share your plan with a link.",
+      "description": "만다라트로 나만의 목표를 설계하고, 테마를 바꾸고, 공유하고 달성하세요.",
       "applicationCategory": "ProductivityApplication",
       "operatingSystem": "Any",
       "image": "https://colormandalart.netlify.app/assets/og-image.png",
@@ -51,18 +51,30 @@
       --ground: #eae7e2;
       --theme-button-bg: linear-gradient(180deg, #00aaff 0%, #eae7e2 100%);
       --title-color: #ffffff;
+      --wordmark-color: rgba(0, 0, 0, 0.35);
+      --wordmark-hover-color: rgba(0, 0, 0, 0.55);
       --panel: rgba(255, 255, 255, 0);
       --main-rgb: 255, 89, 0;
       --main-inactive: #ffad80;
+      --main-active: rgb(var(--main-rgb));
+      --main-hover: var(--main-active);
       --main-text-color: #ffffff;
       --main-placeholder-color: rgba(255, 255, 255, 0.72);
       --sub-rgb: 208, 191, 170;
       --sub-inactive: #e8dfd5;
+      --sub-active: rgb(var(--sub-rgb));
+      --sub-hover: var(--sub-active);
+      --sub-text-color: #ffffff;
+      --sub-placeholder-color: rgba(255, 255, 255, 0.72);
       --cell-rgb: var(--sub-rgb);
       --cell: rgb(var(--sub-rgb));
       --cell-strong: rgb(var(--sub-rgb));
       --third: #ffffff;
+      --third-inactive: rgba(255, 255, 255, 0.7);
+      --third-active: #ffffff;
+      --third-hover: var(--third-active);
       --third-text: #3a3a3a;
+      --third-disabled-text: rgba(58, 58, 58, 0.34);
       --accent: rgb(var(--main-rgb));
       --button: #0d86bd;
       --text: #ffffff;
@@ -302,6 +314,10 @@
       transition-delay: 195ms;
     }
 
+    .theme-menu.open .swatch:nth-child(7) {
+      transition-delay: 230ms;
+    }
+
     .workspace {
       width: 900px;
       max-width: none;
@@ -379,8 +395,8 @@
     }
 
     .cell:disabled {
-      background-color: rgba(255, 255, 255, 0.7);
-      color: rgba(58, 58, 58, 0.34);
+      background-color: var(--third-inactive);
+      color: var(--third-disabled-text);
       cursor: default;
       opacity: 1;
     }
@@ -390,13 +406,12 @@
     }
 
     .cell[data-role="third"]:disabled {
-      background-color: rgba(255, 255, 255, 0.7);
-      color: #3a3a3a;
+      background-color: var(--third-inactive);
+      color: var(--third-text);
       opacity: 1;
     }
 
     .cell.center {
-      color: white;
       box-shadow: none;
     }
 
@@ -407,7 +422,7 @@
     .cell[data-role="core"],
     .cell[data-role="sub"] {
       background-color: var(--sub-inactive);
-      color: white;
+      color: var(--sub-text-color);
     }
 
     .cell[data-role="main"] {
@@ -415,11 +430,14 @@
       color: var(--main-text-color);
     }
 
+    .cell[data-role="main"].is-filled {
+      background-color: var(--main-active) !important;
+    }
+
     .cell[data-role="main"]:enabled:not([readonly]):hover,
     .cell[data-role="main"]:enabled:not([readonly]):focus,
-    .cell[data-role="main"]:enabled:not([readonly]).is-hovering,
-    .cell[data-role="main"].is-filled {
-      background-color: rgb(var(--main-rgb)) !important;
+    .cell[data-role="main"]:enabled:not([readonly]).is-hovering {
+      background-color: var(--main-hover) !important;
     }
 
     .cell[data-role="core"]:disabled,
@@ -427,26 +445,32 @@
       background-color: var(--sub-inactive);
     }
 
+    .cell[data-role="core"].is-filled,
+    .cell[data-role="sub"].is-filled {
+      background-color: var(--sub-active) !important;
+    }
+
     .cell[data-role="core"]:enabled:not([readonly]):hover,
     .cell[data-role="core"]:enabled:not([readonly]):focus,
     .cell[data-role="core"]:enabled:not([readonly]).is-hovering,
-    .cell[data-role="core"].is-filled,
     .cell[data-role="sub"]:enabled:not([readonly]):hover,
     .cell[data-role="sub"]:enabled:not([readonly]):focus,
-    .cell[data-role="sub"]:enabled:not([readonly]).is-hovering,
-    .cell[data-role="sub"].is-filled {
-      background-color: rgb(var(--sub-rgb)) !important;
+    .cell[data-role="sub"]:enabled:not([readonly]).is-hovering {
+      background-color: var(--sub-hover) !important;
     }
 
     .cell[data-role="third"]:enabled {
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: var(--third-inactive);
+    }
+
+    .cell[data-role="third"].is-filled {
+      background-color: var(--third-active) !important;
     }
 
     .cell[data-role="third"]:enabled:not([readonly]):hover,
     .cell[data-role="third"]:enabled:not([readonly]):focus,
-    .cell[data-role="third"]:enabled:not([readonly]).is-hovering,
-    .cell[data-role="third"].is-filled {
-      background-color: #ffffff !important;
+    .cell[data-role="third"]:enabled:not([readonly]).is-hovering {
+      background-color: var(--third-hover) !important;
     }
 
     .cell[data-role="main"]:disabled {
@@ -455,7 +479,7 @@
 
     .cell[data-role="core"]::placeholder,
     .cell[data-role="sub"]::placeholder {
-      color: rgba(255, 255, 255, 0.72);
+      color: var(--sub-placeholder-color);
     }
 
     .cell[data-role="main"]::placeholder {
@@ -466,7 +490,7 @@
       display: block;
       width: max-content;
       margin: 22px auto 0;
-      color: rgba(0, 0, 0, 0.35);
+      color: var(--wordmark-color);
       font-family: "Lexend Deca", Pretendard, sans-serif;
       font-size: 18px;
       font-weight: 600;
@@ -477,7 +501,7 @@
 
     .wordmark:hover,
     .wordmark:focus-visible {
-      color: rgba(0, 0, 0, 0.55);
+      color: var(--wordmark-hover-color);
       outline: 0;
     }
 
@@ -908,6 +932,7 @@
             <button class="swatch" type="button" data-theme="sand" aria-label="Sand theme"></button>
             <button class="swatch" type="button" data-theme="navy" aria-label="Navy theme"></button>
             <button class="swatch" type="button" data-theme="charcoal" aria-label="Charcoal theme"></button>
+            <button class="swatch" type="button" data-theme="mono" aria-label="Black and white theme"></button>
           </div>
         </div>
       </div>
@@ -971,72 +996,175 @@
         "--ground": "#eae7e2",
         "--theme-button-bg": "linear-gradient(180deg, #00aaff 0%, #eae7e2 100%)",
         "--title-color": "#ffffff",
+        "--wordmark-color": "rgba(0, 0, 0, 0.35)",
+        "--wordmark-hover-color": "rgba(0, 0, 0, 0.55)",
         "--main-rgb": "255, 89, 0",
         "--main-inactive": "#ffad80",
+        "--main-active": "rgb(255, 89, 0)",
+        "--main-hover": "rgb(255, 89, 0)",
         "--main-text-color": "#ffffff",
         "--main-placeholder-color": "rgba(255, 255, 255, 0.72)",
         "--sub-rgb": "208, 191, 170",
         "--sub-inactive": "#e8dfd5",
+        "--sub-active": "rgb(208, 191, 170)",
+        "--sub-hover": "rgb(208, 191, 170)",
+        "--sub-text-color": "#ffffff",
+        "--sub-placeholder-color": "rgba(255, 255, 255, 0.72)",
+        "--third-inactive": "rgba(255, 255, 255, 0.7)",
+        "--third-active": "#ffffff",
+        "--third-hover": "#ffffff",
+        "--third-text": "#3a3a3a",
+        "--third-disabled-text": "rgba(58, 58, 58, 0.34)",
       },
       green: {
         "--sky-a": "#73ff7c",
         "--ground": "#e4e4e4",
         "--theme-button-bg": "linear-gradient(180deg, #73ff7c 0%, #e4e4e4 100%)",
         "--title-color": "#48b84f",
+        "--wordmark-color": "rgba(0, 0, 0, 0.35)",
+        "--wordmark-hover-color": "rgba(0, 0, 0, 0.55)",
         "--main-rgb": "221, 255, 0",
         "--main-inactive": "#eeff80",
+        "--main-active": "rgb(221, 255, 0)",
+        "--main-hover": "rgb(221, 255, 0)",
         "--main-text-color": "#60cf8a",
         "--main-placeholder-color": "rgba(96, 207, 138, 0.72)",
         "--sub-rgb": "255, 121, 212",
         "--sub-inactive": "#ffbcea",
+        "--sub-active": "rgb(255, 121, 212)",
+        "--sub-hover": "rgb(255, 121, 212)",
+        "--sub-text-color": "#ffffff",
+        "--sub-placeholder-color": "rgba(255, 255, 255, 0.72)",
+        "--third-inactive": "rgba(255, 255, 255, 0.7)",
+        "--third-active": "#ffffff",
+        "--third-hover": "#ffffff",
+        "--third-text": "#3a3a3a",
+        "--third-disabled-text": "rgba(58, 58, 58, 0.34)",
       },
       lime: {
         "--sky-a": "#f0ff8f",
         "--ground": "#f7eedd",
         "--theme-button-bg": "linear-gradient(180deg, #f0ff8f 0%, #f7eedd 100%)",
         "--title-color": "#60cf8a",
+        "--wordmark-color": "rgba(0, 0, 0, 0.35)",
+        "--wordmark-hover-color": "rgba(0, 0, 0, 0.55)",
         "--main-rgb": "41, 192, 226",
         "--main-inactive": "#29c0e2",
+        "--main-active": "rgb(41, 192, 226)",
+        "--main-hover": "rgb(41, 192, 226)",
         "--main-text-color": "#ffffff",
         "--main-placeholder-color": "rgba(255, 255, 255, 0.72)",
         "--sub-rgb": "96, 207, 138",
         "--sub-inactive": "#60cf8a",
+        "--sub-active": "rgb(96, 207, 138)",
+        "--sub-hover": "rgb(96, 207, 138)",
+        "--sub-text-color": "#ffffff",
+        "--sub-placeholder-color": "rgba(255, 255, 255, 0.72)",
+        "--third-inactive": "rgba(255, 255, 255, 0.7)",
+        "--third-active": "#ffffff",
+        "--third-hover": "#ffffff",
+        "--third-text": "#3a3a3a",
+        "--third-disabled-text": "rgba(58, 58, 58, 0.34)",
       },
       sand: {
         "--sky-a": "#c8b6a6",
         "--ground": "#c8b6a6",
         "--theme-button-bg": "#c8b6a6",
         "--title-color": "#615540",
+        "--wordmark-color": "rgba(0, 0, 0, 0.35)",
+        "--wordmark-hover-color": "rgba(0, 0, 0, 0.55)",
         "--main-rgb": "97, 85, 64",
         "--main-inactive": "#b0aaa0",
+        "--main-active": "rgb(97, 85, 64)",
+        "--main-hover": "rgb(97, 85, 64)",
         "--main-text-color": "#ffffff",
         "--main-placeholder-color": "rgba(255, 255, 255, 0.72)",
         "--sub-rgb": "111, 130, 110",
         "--sub-inactive": "#b8c1b7",
+        "--sub-active": "rgb(111, 130, 110)",
+        "--sub-hover": "rgb(111, 130, 110)",
+        "--sub-text-color": "#ffffff",
+        "--sub-placeholder-color": "rgba(255, 255, 255, 0.72)",
+        "--third-inactive": "rgba(255, 255, 255, 0.7)",
+        "--third-active": "#ffffff",
+        "--third-hover": "#ffffff",
+        "--third-text": "#3a3a3a",
+        "--third-disabled-text": "rgba(58, 58, 58, 0.34)",
       },
       navy: {
         "--sky-a": "#1a235c",
         "--ground": "#1a235c",
         "--theme-button-bg": "#1a235c",
         "--title-color": "#ffffff",
+        "--wordmark-color": "rgba(0, 0, 0, 0.35)",
+        "--wordmark-hover-color": "rgba(0, 0, 0, 0.55)",
         "--main-rgb": "0, 64, 167",
         "--main-inactive": "#80a0d3",
+        "--main-active": "rgb(0, 64, 167)",
+        "--main-hover": "rgb(0, 64, 167)",
         "--main-text-color": "#ffffff",
         "--main-placeholder-color": "rgba(255, 255, 255, 0.72)",
         "--sub-rgb": "85, 176, 255",
         "--sub-inactive": "#aad8ff",
+        "--sub-active": "rgb(85, 176, 255)",
+        "--sub-hover": "rgb(85, 176, 255)",
+        "--sub-text-color": "#ffffff",
+        "--sub-placeholder-color": "rgba(255, 255, 255, 0.72)",
+        "--third-inactive": "rgba(255, 255, 255, 0.7)",
+        "--third-active": "#ffffff",
+        "--third-hover": "#ffffff",
+        "--third-text": "#3a3a3a",
+        "--third-disabled-text": "rgba(58, 58, 58, 0.34)",
       },
       charcoal: {
         "--sky-a": "#2c2c2c",
         "--ground": "#2c2c2c",
         "--theme-button-bg": "#2c2c2c",
         "--title-color": "#d22fc1",
+        "--wordmark-color": "rgba(0, 0, 0, 0.35)",
+        "--wordmark-hover-color": "rgba(0, 0, 0, 0.55)",
         "--main-rgb": "210, 47, 193",
         "--main-inactive": "#e998e1",
+        "--main-active": "rgb(210, 47, 193)",
+        "--main-hover": "rgb(210, 47, 193)",
         "--main-text-color": "#ffffff",
         "--main-placeholder-color": "rgba(255, 255, 255, 0.72)",
         "--sub-rgb": "161, 155, 148",
         "--sub-inactive": "#d0cdca",
+        "--sub-active": "rgb(161, 155, 148)",
+        "--sub-hover": "rgb(161, 155, 148)",
+        "--sub-text-color": "#ffffff",
+        "--sub-placeholder-color": "rgba(255, 255, 255, 0.72)",
+        "--third-inactive": "rgba(255, 255, 255, 0.7)",
+        "--third-active": "#ffffff",
+        "--third-hover": "#ffffff",
+        "--third-text": "#3a3a3a",
+        "--third-disabled-text": "rgba(58, 58, 58, 0.34)",
+      },
+      mono: {
+        "--sky-a": "#efefef",
+        "--ground": "#efefef",
+        "--theme-button-bg": "#ffffff",
+        "--title-color": "#3a3a3a",
+        "--wordmark-color": "#9c9c9c",
+        "--wordmark-hover-color": "#6f6f6f",
+        "--main-rgb": "58, 58, 58",
+        "--main-inactive": "#3a3a3a",
+        "--main-active": "#3a3a3a",
+        "--main-hover": "#303030",
+        "--main-text-color": "#ffffff",
+        "--main-placeholder-color": "rgba(255, 255, 255, 0.72)",
+        "--sub-rgb": "239, 239, 239",
+        "--sub-inactive": "#efefef",
+        "--sub-active": "#efefef",
+        "--sub-hover": "#e3e3e3",
+        "--sub-text-color": "#3a3a3a",
+        "--sub-placeholder-color": "rgba(58, 58, 58, 0.58)",
+        "--third-inactive": "#ffffff",
+        "--third-active": "#ffffff",
+        "--third-hover": "#f5f5f5",
+        "--third-text": "#3a3a3a",
+        "--third-disabled-text": "#3a3a3a",
       },
     };
 
@@ -1329,15 +1457,15 @@
       const isMain = role === "main";
       const isSub = role === "core" || role === "sub";
       if (isMain) {
-        ctx.fillStyle = enabled ? `rgb(${cssVar("--main-rgb")})` : cssVar("--main-inactive");
+        ctx.fillStyle = enabled ? cssVar("--main-active") : cssVar("--main-inactive");
       } else if (isSub) {
-        ctx.fillStyle = enabled ? `rgb(${cssVar("--sub-rgb")})` : cssVar("--sub-inactive");
+        ctx.fillStyle = enabled ? cssVar("--sub-active") : cssVar("--sub-inactive");
       } else if (isThird) {
-        ctx.fillStyle = enabled ? "#ffffff" : "rgba(255,255,255,0.7)";
+        ctx.fillStyle = enabled ? cssVar("--third-active") : cssVar("--third-inactive");
       }
       ctx.fillRect(x, y, size, size);
 
-      ctx.fillStyle = isThird ? "#3a3a3a" : (isMain ? cssVar("--main-text-color") : "rgba(255,255,255,0.95)");
+      ctx.fillStyle = isThird ? cssVar("--third-text") : (isMain ? cssVar("--main-text-color") : cssVar("--sub-text-color"));
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = `600 ${Math.max(7, size * 0.15)}px "Lexend Deca", Pretendard, sans-serif`;
@@ -1427,7 +1555,7 @@
         }
       }
 
-      ctx.fillStyle = "rgba(0,0,0,0.35)";
+      ctx.fillStyle = cssVar("--wordmark-color");
       ctx.textAlign = "center";
       ctx.textBaseline = "top";
       ctx.font = `600 ${wordmarkFontSize}px "Lexend Deca", Pretendard, sans-serif`;
