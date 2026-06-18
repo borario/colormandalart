@@ -105,7 +105,7 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: linear-gradient(180deg, #fff8b1 0%, #ffb270 25%, #ff94fd 50%, #ae80ef 75%, #1bd5cc 100%);
+      background: var(--celebration-gradient, linear-gradient(180deg, #fff8b1 0%, #ffb270 25%, #ff94fd 50%, #ae80ef 75%, #1bd5cc 100%));
       opacity: 0;
       transition: opacity 1800ms ease;
     }
@@ -120,30 +120,6 @@
 
     body.is-celebration-paused::before {
       opacity: 0;
-      animation-play-state: paused;
-    }
-
-    @keyframes celebrationFlow {
-      0% {
-        transform: translateY(0);
-      }
-      100% {
-        transform: translateY(-50%);
-      }
-    }
-
-    @media (min-width: 821px) {
-      body::before {
-        inset: auto 0 auto 0;
-        top: 0;
-        height: 400vh;
-        background: linear-gradient(180deg, #fff8b1 0%, #ffb270 10%, #ff94fd 20%, #ae80ef 30%, #1bd5cc 40%, #fff8b1 50%, #ffb270 60%, #ff94fd 70%, #ae80ef 80%, #1bd5cc 90%, #fff8b1 100%);
-        transform: translateY(0);
-      }
-
-      body.is-celebrating::before {
-        animation: celebrationFlow 1300ms linear infinite;
-      }
     }
 
     html {
@@ -1247,6 +1223,9 @@
     let wasBoardComplete = false;
     let celebrationTimer;
     let celebrationFadeTimer;
+    let celebrationFrame;
+    let lastCelebrationPaint = 0;
+    const celebrationColors = ["#fff8b1", "#ffb270", "#ff94fd", "#ae80ef", "#1bd5cc"];
 
     function makeCell({ block, key, label, center = false, disabled = true, readOnly = false, role = "third" }) {
       const input = document.createElement("textarea");
@@ -1543,18 +1522,65 @@
       return Object.values(cells).every((cell) => cell.value.trim());
     }
 
+    function hexToRgb(hex) {
+      const value = hex.replace("#", "");
+      return {
+        r: parseInt(value.slice(0, 2), 16),
+        g: parseInt(value.slice(2, 4), 16),
+        b: parseInt(value.slice(4, 6), 16),
+      };
+    }
+
+    function mixColor(from, to, amount) {
+      const a = hexToRgb(from);
+      const b = hexToRgb(to);
+      const mix = (start, end) => Math.round(start + (end - start) * amount);
+      return `rgb(${mix(a.r, b.r)}, ${mix(a.g, b.g)}, ${mix(a.b, b.b)})`;
+    }
+
+    function celebrationColorAt(position) {
+      const wrapped = ((position % 1) + 1) % 1;
+      const scaled = wrapped * celebrationColors.length;
+      const index = Math.floor(scaled);
+      const nextIndex = (index + 1) % celebrationColors.length;
+      return mixColor(celebrationColors[index], celebrationColors[nextIndex], scaled - index);
+    }
+
+    function paintCelebrationGradient(progress) {
+      const stops = [0, 0.25, 0.5, 0.75, 1];
+      const colors = stops.map((stop) => celebrationColorAt(stop + progress));
+      document.documentElement.style.setProperty(
+        "--celebration-gradient",
+        `linear-gradient(180deg, ${colors[0]} 0%, ${colors[1]} 25%, ${colors[2]} 50%, ${colors[3]} 75%, ${colors[4]} 100%)`
+      );
+    }
+
+    function animateCelebrationGradient(startTime) {
+      const now = performance.now();
+      if (now - lastCelebrationPaint > 33) {
+        const progress = ((now - startTime) / 1300) % 1;
+        paintCelebrationGradient(progress);
+        lastCelebrationPaint = now;
+      }
+      celebrationFrame = requestAnimationFrame(() => animateCelebrationGradient(startTime));
+    }
+
     function triggerCompletionCelebration() {
       window.clearTimeout(celebrationTimer);
       window.clearTimeout(celebrationFadeTimer);
+      if (celebrationFrame) cancelAnimationFrame(celebrationFrame);
       document.body.classList.remove("is-celebrating");
       document.body.classList.remove("is-celebration-fading");
       document.body.classList.remove("is-celebration-paused");
+      paintCelebrationGradient(0);
       document.body.offsetWidth;
       document.body.classList.add("is-celebrating");
+      animateCelebrationGradient(performance.now());
       celebrationTimer = window.setTimeout(() => {
         document.body.classList.add("is-celebration-fading");
       }, 1100);
       celebrationFadeTimer = window.setTimeout(() => {
+        if (celebrationFrame) cancelAnimationFrame(celebrationFrame);
         document.body.classList.add("is-celebration-paused");
       }, 3100);
     }
