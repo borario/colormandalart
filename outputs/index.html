@@ -123,6 +123,11 @@
       opacity: 0;
     }
 
+    body.is-celebration-paused::before {
+      opacity: 0;
+      animation-play-state: paused;
+    }
+
     @keyframes celebrationFlow {
       0% {
         transform: translateY(0);
@@ -1534,14 +1539,14 @@
       window.clearTimeout(celebrationFadeTimer);
       document.body.classList.remove("is-celebrating");
       document.body.classList.remove("is-celebration-fading");
+      document.body.classList.remove("is-celebration-paused");
       document.body.offsetWidth;
       document.body.classList.add("is-celebrating");
       celebrationTimer = window.setTimeout(() => {
         document.body.classList.add("is-celebration-fading");
       }, 1100);
       celebrationFadeTimer = window.setTimeout(() => {
-        document.body.classList.remove("is-celebrating");
-        document.body.classList.remove("is-celebration-fading");
+        document.body.classList.add("is-celebration-paused");
       }, 3100);
     }
 
