@@ -1575,7 +1575,9 @@
       paintCelebrationGradient(0);
       document.body.offsetWidth;
       document.body.classList.add("is-celebrating");
-      animateCelebrationGradient(performance.now());
+      if (!window.matchMedia("(max-width: 820px)").matches) {
+        animateCelebrationGradient(performance.now());
+      }
       celebrationTimer = window.setTimeout(() => {
         document.body.classList.add("is-celebration-fading");
       }, 1100);
