@@ -111,7 +111,7 @@
       background: linear-gradient(180deg, #fff8b1 0%, #ffb270 10%, #ff94fd 20%, #ae80ef 30%, #1bd5cc 40%, #fff8b1 50%, #ffb270 60%, #ff94fd 70%, #ae80ef 80%, #1bd5cc 90%, #fff8b1 100%);
       opacity: 0;
       transform: translateY(0);
-      transition: opacity 900ms ease;
+      transition: opacity 1800ms ease;
     }
 
     body.is-celebrating::before {
@@ -1542,7 +1542,7 @@
       celebrationFadeTimer = window.setTimeout(() => {
         document.body.classList.remove("is-celebrating");
         document.body.classList.remove("is-celebration-fading");
-      }, 2200);
+      }, 3100);
     }
 
     function checkCompletionCelebration() {
