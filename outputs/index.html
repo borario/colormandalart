@@ -102,21 +102,16 @@
     body::before {
       content: "";
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 400vh;
+      inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: linear-gradient(180deg, #fff8b1 0%, #ffb270 10%, #ff94fd 20%, #ae80ef 30%, #1bd5cc 40%, #fff8b1 50%, #ffb270 60%, #ff94fd 70%, #ae80ef 80%, #1bd5cc 90%, #fff8b1 100%);
+      background: linear-gradient(180deg, #fff8b1 0%, #ffb270 25%, #ff94fd 50%, #ae80ef 75%, #1bd5cc 100%);
       opacity: 0;
-      transform: translateY(0);
       transition: opacity 1800ms ease;
     }
 
     body.is-celebrating::before {
       opacity: 1;
-      animation: celebrationFlow 1300ms linear infinite;
     }
 
     body.is-celebration-fading::before {
@@ -134,6 +129,20 @@
       }
       100% {
         transform: translateY(-50%);
+      }
+    }
+
+    @media (min-width: 821px) {
+      body::before {
+        inset: auto 0 auto 0;
+        top: 0;
+        height: 400vh;
+        background: linear-gradient(180deg, #fff8b1 0%, #ffb270 10%, #ff94fd 20%, #ae80ef 30%, #1bd5cc 40%, #fff8b1 50%, #ffb270 60%, #ff94fd 70%, #ae80ef 80%, #1bd5cc 90%, #fff8b1 100%);
+        transform: translateY(0);
+      }
+
+      body.is-celebrating::before {
+        animation: celebrationFlow 1300ms linear infinite;
       }
     }
 
