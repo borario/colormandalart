@@ -1220,6 +1220,8 @@
     const cells = {};
     let previewObjectUrl = "";
     const publishedUrl = "https://colormandalart.netlify.app/";
+    const supabaseUrl = "https://xovbqfprcxebqljyudto.supabase.co";
+    const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvdmJxZnByY3hlYnFsanl1ZHRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMTE1NTAsImV4cCI6MjA5NzU4NzU1MH0.CYsvII1ry9HUiKcxhdakICVJDVsuRgXrSe6dBZTrj_U";
     let lastCellFeedbackAt = 0;
     let wasBoardComplete = false;
     let celebrationTimer;
@@ -1413,50 +1415,120 @@
       ];
     }
 
-    function buildShareUrl() {
+    function baseShareUrl() {
+      return window.location.protocol === "file:"
+        ? publishedUrl
+        : `${window.location.origin}${window.location.pathname}`;
+    }
+
+    function buildFallbackShareUrl() {
       const baseUrl = window.location.protocol === "file:"
         ? publishedUrl
         : `${window.location.origin}${window.location.pathname}`;
       return `${baseUrl}#s=${encodeShareState(collectShareState())}`;
     }
 
-    function formatShareUrl(url) {
-      const parsed = new URL(url);
-      return `${parsed.host}/...`;
+    function hasSupabaseConfig() {
+      return Boolean(supabaseUrl && supabaseAnonKey);
     }
 
-    function loadShareFromUrl() {
+    function createShareId() {
+      const bytes = new Uint8Array(6);
+      crypto.getRandomValues(bytes);
+      return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+
+    async function supabaseRequest(path, options = {}) {
+      const response = await fetch(`${supabaseUrl.replace(/\/$/, "")}${path}`, {
+        ...options,
+        headers: {
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+          "Content-Type": "application/json",
+          ...(options.headers || {}),
+        },
+      });
+      if (!response.ok) throw new Error("Supabase request failed");
+      return response;
+    }
+
+    async function saveShareState() {
+      if (!hasSupabaseConfig()) return null;
+      const id = createShareId();
+      await supabaseRequest("/rest/v1/mandalarts", {
+        method: "POST",
+        headers: { Prefer: "return=minimal" },
+        body: JSON.stringify({ id, data: collectShareState() }),
+      });
+      return id;
+    }
+
+    async function buildShareUrl() {
+      try {
+        const id = await saveShareState();
+        if (id) return `${baseShareUrl()}?m=${id}`;
+      } catch {
+        return buildFallbackShareUrl();
+      }
+      return buildFallbackShareUrl();
+    }
+
+    function formatShareUrl(url) {
+      const parsed = new URL(url);
+      const shortId = parsed.searchParams.get("m");
+      return shortId ? `${parsed.host}/?m=${shortId}` : `${parsed.host}/...`;
+    }
+
+    function applyShareState(state) {
+      if (Array.isArray(state)) {
+        const [, year, title, themeIndex, values] = state;
+        const keys = Object.keys(cells).sort();
+        const theme = themeNames[themeIndex] || "sky";
+        applyTheme(theme);
+        if (year) yearInput.value = year;
+        Object.entries(values || {}).forEach(([index, value]) => {
+          const key = keys[Number(index)];
+          if (key && cells[key]) cells[key].value = value;
+        });
+        syncState();
+        if (title) titleInput.value = title;
+      } else {
+        if (state.th && themeMap[state.th]) applyTheme(state.th);
+        if (state.y) yearInput.value = state.y;
+        Object.entries(state.c || {}).forEach(([key, value]) => {
+          if (cells[key]) cells[key].value = value;
+        });
+        syncState();
+        if (state.t) titleInput.value = state.t;
+      }
+    }
+
+    async function loadShareFromUrl() {
+      const shortId = new URLSearchParams(window.location.search).get("m");
+      if (shortId && hasSupabaseConfig()) {
+        try {
+          const response = await supabaseRequest(`/rest/v1/mandalarts?id=eq.${encodeURIComponent(shortId)}&select=data`);
+          const rows = await response.json();
+          if (rows[0]?.data) {
+            applyShareState(rows[0].data);
+            alignAllCells();
+            return;
+          }
+        } catch {
+          return;
+        }
+      }
+
       const match = window.location.hash.match(/(?:^#|&)([ms])=([^&]+)/);
       if (!match) return;
       try {
         const state = decodeShareState(match[2]);
-        if (Array.isArray(state)) {
-          const [, year, title, themeIndex, values] = state;
-          const keys = Object.keys(cells).sort();
-          const theme = themeNames[themeIndex] || "sky";
-          applyTheme(theme);
-          if (year) yearInput.value = year;
-          Object.entries(values || {}).forEach(([index, value]) => {
-            const key = keys[Number(index)];
-            if (key && cells[key]) cells[key].value = value;
-          });
-          syncState();
-          if (title) titleInput.value = title;
-        } else {
-          if (state.th && themeMap[state.th]) applyTheme(state.th);
-          if (state.y) yearInput.value = state.y;
-          Object.entries(state.c || {}).forEach(([key, value]) => {
-            if (cells[key]) cells[key].value = value;
-          });
-          syncState();
-          if (state.t) titleInput.value = state.t;
-        }
+        applyShareState(state);
         alignAllCells();
       } catch {
         window.history.replaceState(null, "", window.location.pathname);
       }
     }
-
     function openThemeMenu() {
       themeMenu.classList.add("open");
       themeButton.classList.add("is-menu-open");
@@ -1720,13 +1792,17 @@
       }, "image/png");
     }
 
-    setUpThemeSwatches();
-    buildBoard();
-    yearInput.value = spacedYear();
-    syncState();
-    loadShareFromUrl();
-    alignAllCells();
-    wasBoardComplete = isBoardComplete();
+    async function initializeApp() {
+      setUpThemeSwatches();
+      buildBoard();
+      yearInput.value = spacedYear();
+      syncState();
+      await loadShareFromUrl();
+      alignAllCells();
+      wasBoardComplete = isBoardComplete();
+    }
+
+    initializeApp();
 
     board.addEventListener("input", (event) => {
       const cell = event.target.closest(".cell");
@@ -1784,13 +1860,16 @@
       const theme = event.target.closest(".swatch")?.dataset.theme;
       if (theme) applyTheme(theme);
     });
-    function openSharePopup() {
-      const fullUrl = buildShareUrl();
+    async function openSharePopup() {
+      shareLink.value = "Creating link...";
+      shareLink.dataset.fullUrl = "";
+      shareLink.title = "";
+      sharePopupBackdrop.classList.add("open");
+      sharePopupBackdrop.setAttribute("aria-hidden", "false");
+      const fullUrl = await buildShareUrl();
       shareLink.value = formatShareUrl(fullUrl);
       shareLink.dataset.fullUrl = fullUrl;
       shareLink.title = fullUrl;
-      sharePopupBackdrop.classList.add("open");
-      sharePopupBackdrop.setAttribute("aria-hidden", "false");
     }
 
     function closeSharePopup() {
