@@ -1416,16 +1416,11 @@
     }
 
     function baseShareUrl() {
-      return window.location.protocol === "file:"
-        ? publishedUrl
-        : `${window.location.origin}${window.location.pathname}`;
+      return publishedUrl;
     }
 
     function buildFallbackShareUrl() {
-      const baseUrl = window.location.protocol === "file:"
-        ? publishedUrl
-        : `${window.location.origin}${window.location.pathname}`;
-      return `${baseUrl}#s=${encodeShareState(collectShareState())}`;
+      return `${publishedUrl}#s=${encodeShareState(collectShareState())}`;
     }
 
     function hasSupabaseConfig() {
@@ -1448,7 +1443,10 @@
           ...(options.headers || {}),
         },
       });
-      if (!response.ok) throw new Error("Supabase request failed");
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Supabase request failed");
+      }
       return response;
     }
 
@@ -1467,7 +1465,8 @@
       try {
         const id = await saveShareState();
         if (id) return `${baseShareUrl()}?m=${id}`;
-      } catch {
+      } catch (error) {
+        console.warn("Short share link failed. Falling back to encoded URL.", error);
         return buildFallbackShareUrl();
       }
       return buildFallbackShareUrl();

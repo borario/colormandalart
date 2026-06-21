@@ -6,6 +6,10 @@ create table if not exists public.mandalarts (
 
 alter table public.mandalarts enable row level security;
 
+grant usage on schema public to anon;
+grant select, insert on public.mandalarts to anon;
+grant select, insert on public.mandalarts to authenticated;
+
 drop policy if exists "Public mandalart read" on public.mandalarts;
 create policy "Public mandalart read"
 on public.mandalarts
