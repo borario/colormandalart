@@ -1194,6 +1194,7 @@
         "--third-disabled-text": "#3a3a3a",
       },
     };
+    const themeNames = Object.keys(themeMap);
 
     const blockOrderToGoal = [1, 2, 3, 4, null, 5, 6, 7, 8];
     const goalToBlock = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 5, 6: 6, 7: 7, 8: 8 };
@@ -1396,39 +1397,60 @@
     }
 
     function collectShareState() {
+      const keys = Object.keys(cells).sort();
       const values = {};
-      Object.entries(cells).forEach(([key, cell]) => {
+      keys.forEach((key, index) => {
+        const cell = cells[key];
         const value = cell.value.trim();
-        if (value) values[key] = value;
+        if (value) values[index] = value;
       });
-      return {
-        v: 1,
-        y: yearInput.value.trim(),
-        t: titleInput.value.trim(),
-        th: themeButton.dataset.theme || "sky",
-        c: values,
-      };
+      return [
+        2,
+        yearInput.value.trim(),
+        titleInput.value.trim(),
+        Math.max(0, themeNames.indexOf(themeButton.dataset.theme || "sky")),
+        values,
+      ];
     }
 
     function buildShareUrl() {
       const baseUrl = window.location.protocol === "file:"
         ? publishedUrl
         : `${window.location.origin}${window.location.pathname}`;
-      return `${baseUrl}#m=${encodeShareState(collectShareState())}`;
+      return `${baseUrl}#s=${encodeShareState(collectShareState())}`;
+    }
+
+    function formatShareUrl(url) {
+      const parsed = new URL(url);
+      return `${parsed.host}/...`;
     }
 
     function loadShareFromUrl() {
-      const match = window.location.hash.match(/(?:^#|&)m=([^&]+)/);
+      const match = window.location.hash.match(/(?:^#|&)([ms])=([^&]+)/);
       if (!match) return;
       try {
-        const state = decodeShareState(match[1]);
-        if (state.th && themeMap[state.th]) applyTheme(state.th);
-        if (state.y) yearInput.value = state.y;
-        Object.entries(state.c || {}).forEach(([key, value]) => {
-          if (cells[key]) cells[key].value = value;
-        });
-        syncState();
-        if (state.t) titleInput.value = state.t;
+        const state = decodeShareState(match[2]);
+        if (Array.isArray(state)) {
+          const [, year, title, themeIndex, values] = state;
+          const keys = Object.keys(cells).sort();
+          const theme = themeNames[themeIndex] || "sky";
+          applyTheme(theme);
+          if (year) yearInput.value = year;
+          Object.entries(values || {}).forEach(([index, value]) => {
+            const key = keys[Number(index)];
+            if (key && cells[key]) cells[key].value = value;
+          });
+          syncState();
+          if (title) titleInput.value = title;
+        } else {
+          if (state.th && themeMap[state.th]) applyTheme(state.th);
+          if (state.y) yearInput.value = state.y;
+          Object.entries(state.c || {}).forEach(([key, value]) => {
+            if (cells[key]) cells[key].value = value;
+          });
+          syncState();
+          if (state.t) titleInput.value = state.t;
+        }
         alignAllCells();
       } catch {
         window.history.replaceState(null, "", window.location.pathname);
@@ -1763,7 +1785,10 @@
       if (theme) applyTheme(theme);
     });
     function openSharePopup() {
-      shareLink.value = buildShareUrl();
+      const fullUrl = buildShareUrl();
+      shareLink.value = formatShareUrl(fullUrl);
+      shareLink.dataset.fullUrl = fullUrl;
+      shareLink.title = fullUrl;
       sharePopupBackdrop.classList.add("open");
       sharePopupBackdrop.setAttribute("aria-hidden", "false");
     }
@@ -1784,11 +1809,12 @@
     }
 
     async function copyShareLink() {
+      const fullUrl = shareLink.dataset.fullUrl || shareLink.value;
       try {
-        await navigator.clipboard.writeText(shareLink.value);
+        await navigator.clipboard.writeText(fullUrl);
       } catch {
         const hidden = document.createElement("textarea");
-        hidden.value = shareLink.value;
+        hidden.value = fullUrl;
         hidden.style.position = "fixed";
         hidden.style.left = "-9999px";
         hidden.style.opacity = "0";
