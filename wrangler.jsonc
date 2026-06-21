@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mandalart",
+  "compatibility_date": "2026-06-21",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "outputs"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}

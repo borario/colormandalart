@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node work/server.js"
+    "start": "node work/server.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.103.0"
   }
 }
