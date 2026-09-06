@@ -1,11 +1,15 @@
 {
   "name": "Color Mandalart",
   "short_name": "Mandalart",
-  "description": "Create a colorful Mandalart goal map and share it with a link.",
+  "description": "Design your goals, turn actions into habits, and keep going every day.",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#EAE7E2",
   "theme_color": "#00AAFF",
+  "categories": ["productivity", "lifestyle"],
   "icons": [
     {
       "src": "assets/icon-192.png",
