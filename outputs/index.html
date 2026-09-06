@@ -10,34 +10,34 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Mandalart" />
-  <link rel="canonical" href="https://mandalart.everyday-actions.workers.dev/" />
-  <link rel="icon" type="image/png" href="assets/favicon.png" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-  <link rel="manifest" href="site.webmanifest" />
+  <link rel="canonical" href="https://mandalart.tracewrks.workers.dev/" />
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=2026090702" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2026090702" />
+  <link rel="manifest" href="site.webmanifest?v=2026090702" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content="Color Mandalart" />
   <meta property="og:title" content="컬러 만다라트 | Color Mandalart" />
   <meta property="og:description" content="나만의 목표를 설계하고, 테마를 손쉽게 변경하고, 함께 공유하고 달성하세요." />
-  <meta property="og:url" content="https://mandalart.everyday-actions.workers.dev/" />
-  <meta property="og:image" content="https://mandalart.everyday-actions.workers.dev/assets/og-image.png?v=20260907" />
+  <meta property="og:url" content="https://mandalart.tracewrks.workers.dev/" />
+  <meta property="og:image" content="https://mandalart.tracewrks.workers.dev/assets/og-image.png?v=20260907" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Color Mandalart preview image" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="컬러 만다라트 | Color Mandalart" />
   <meta name="twitter:description" content="나만의 목표를 설계하고, 테마를 손쉽게 변경하고, 함께 공유하고 달성하세요." />
-  <meta name="twitter:image" content="https://mandalart.everyday-actions.workers.dev/assets/og-image.png?v=20260907" />
+  <meta name="twitter:image" content="https://mandalart.tracewrks.workers.dev/assets/og-image.png?v=20260907" />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Color Mandalart",
-      "url": "https://mandalart.everyday-actions.workers.dev/",
+      "url": "https://mandalart.tracewrks.workers.dev/",
       "description": "나만의 목표를 설계하고, 테마를 손쉽게 변경하고, 함께 공유하고 달성하세요.",
       "applicationCategory": "ProductivityApplication",
       "operatingSystem": "Any",
-      "image": "https://mandalart.everyday-actions.workers.dev/assets/og-image.png?v=20260907",
+      "image": "https://mandalart.tracewrks.workers.dev/assets/og-image.png?v=20260907",
       "creator": {
         "@type": "Organization",
         "name": "trace.wrks",
@@ -735,8 +735,38 @@
       height: 24px;
       border: 0;
       background: transparent;
+      color: #45505e;
       cursor: pointer;
       font-size: 0;
+      transition: color 160ms ease, opacity 160ms ease;
+    }
+
+    .popup-close::before,
+    .popup-close::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 12px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transform-origin: center;
+    }
+
+    .popup-close::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .popup-close::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .popup-close:hover,
+    .popup-close:focus-visible {
+      color: #2f3946;
+      opacity: 0.8;
+      outline: 0;
     }
 
     .share-link-row {
@@ -791,6 +821,62 @@
       background: #45505e;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
       cursor: pointer;
+      color: #ffffff;
+    }
+
+    .icon-square.copy::before,
+    .icon-square.copy::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 18px;
+      border: 2px solid currentColor;
+      background: transparent;
+    }
+
+    .icon-square.copy::before {
+      left: 14px;
+      top: 11px;
+    }
+
+    .icon-square.copy::after {
+      left: 19px;
+      top: 16px;
+    }
+
+    .icon-square.download {
+      background-color: #45505e;
+      background-image: linear-gradient(currentColor, currentColor);
+      background-repeat: no-repeat;
+      background-position: center 33px;
+      background-size: 22px 2px;
+    }
+
+    .icon-square.download::before,
+    .icon-square.download::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      pointer-events: none;
+    }
+
+    .icon-square.download::before {
+      top: 11px;
+      width: 2px;
+      height: 17px;
+      border-radius: 999px;
+      background: currentColor;
+      transform: translateX(-50%);
+    }
+
+    .icon-square.download::after {
+      top: 22px;
+      width: 13px;
+      height: 13px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: translateX(-50%) rotate(45deg);
+      transform-origin: center;
     }
 
     .download-options {
@@ -850,8 +936,11 @@
     }
 
     .popup-close .popup-icon {
-      width: auto;
-      height: auto;
+      display: none;
+    }
+
+    .icon-square .popup-icon {
+      display: none;
     }
 
     .image-preview-backdrop {
@@ -1511,7 +1600,7 @@ Repeatedly seeing your goal helps connect your everyday choices to it and natura
     const cells = {};
     let previewObjectUrl = "";
     const boardStorageKey = "color-mandalart-board-v1";
-    const publishedUrl = "https://mandalart.everyday-actions.workers.dev/";
+    const publishedUrl = "https://mandalart.tracewrks.workers.dev/";
     const supabaseUrl = "https://xovbqfprcxebqljyudto.supabase.co";
     const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvdmJxZnByY3hlYnFsanl1ZHRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMTE1NTAsImV4cCI6MjA5NzU4NzU1MH0.CYsvII1ry9HUiKcxhdakICVJDVsuRgXrSe6dBZTrj_U";
     let lastCellFeedbackAt = 0;

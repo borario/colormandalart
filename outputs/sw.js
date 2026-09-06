@@ -1,4 +1,4 @@
-const CACHE_NAME = "color-mandalart-v8";
+const CACHE_NAME = "color-mandalart-v9";
 const APP_SHELL = [
   "./",
   "./index.html",
